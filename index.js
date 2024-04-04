@@ -1,7 +1,9 @@
+#! /usr/bin/env node
 import inquirer from "inquirer";
 let todoList = [];
 let count = 0;
 let isCondition = true;
+// Add a Todo
 while (isCondition) {
     let addTodo = await inquirer.prompt([
         { name: "todo", type: "input", message: "Enter Your Todo" },
@@ -9,15 +11,10 @@ while (isCondition) {
             name: "moreTodos",
             type: "confirm",
             message: "Do you want to add more Todos",
-            default: "false",
-        },
-        {
-            name: "confirmRemoveTodo",
-            type: "confirm",
-            message: "Do you want to remove a Todo",
-            default: "false",
+            default: true,
         },
     ]);
+    // Confirm for Todo is empty or not empty
     if (addTodo.todo === "") {
         console.log("Please add a todo");
     }
@@ -25,30 +22,123 @@ while (isCondition) {
         todoList.push({ id: count++, todo: addTodo.todo });
     }
     isCondition = addTodo.moreTodos;
-    console.log(todoList);
-    let isRemTodo = addTodo.confirmRemoveTodo;
-    if (isRemTodo) {
-        let remTodo = await inquirer.prompt([
-            {
-                name: "removeTodo",
-                type: "number",
-                message: "Enter a id for remove a Todo",
-            },
-        ]);
-        const removeTodos = (todoId) => {
-            let delTodo = todoList.filter((e) => {
-                return e.id !== todoId;
-            });
-            todoList = delTodo;
-        };
-        let findId = todoList.find((e) => e.id === remTodo.removeTodo);
-        if (findId) {
-            removeTodos(remTodo.removeTodo);
-            console.log("After Remove a Todo");
-            console.log(todoList);
-        }
-        else {
-            console.log(`The ID ${remTodo.removeTodo} is not available`);
+}
+;
+todoList.forEach((e) => {
+    console.log(`${e.id}) ${e.todo}`);
+});
+// Edit a Todo
+isCondition = true;
+while (isCondition) {
+    // confirm for edit a todo
+    let editTodo = await inquirer.prompt([
+        {
+            name: "confirmEditTodo",
+            type: "confirm",
+            message: "Do you want to edit Todo",
+            default: true,
+        },
+    ]);
+    if (todoList.length === 0) {
+        console.log(`You Don't edit a todo because the todo-list is empty`);
+        break;
+    }
+    else {
+        isCondition = editTodo.confirmEditTodo;
+        //enter id for  edit a todo
+        if (isCondition) {
+            let editTodoId = await inquirer.prompt([
+                {
+                    name: "editTodo",
+                    type: "number",
+                    message: "Enter a id for edit a Todo",
+                },
+            ]);
+            // find id of todo for edit
+            let findEditId = todoList.find((e) => e.id === editTodoId.editTodo);
+            // check id is available or not
+            if (findEditId) {
+                let editTdoValue = await inquirer.prompt([
+                    { name: "editValue", type: "input", message: "Edit a Todo" },
+                ]);
+                // check edit value is empty or not
+                if (editTdoValue.editValue === '') {
+                    console.log('Please Enter a task for edit a todo');
+                }
+                else {
+                    findEditId.todo = editTdoValue.editValue;
+                }
+            }
+            else {
+                console.log(`The ID ${editTodoId.editTodo} is not available`);
+            }
         }
     }
+}
+;
+if (todoList.length !== 0) {
+    console.log("After Edit a Todo-list");
+    todoList.forEach((e) => {
+        console.log(`${e.id}) ${e.todo}`);
+    });
+}
+;
+// Remove a Todo
+isCondition = true;
+while (isCondition) {
+    // confirm for edit a todo
+    let remTodo = await inquirer.prompt([
+        {
+            name: "confirmRemoveTodo",
+            type: "confirm",
+            message: "Do you want to remove a Todo",
+            default: true,
+        },
+    ]);
+    if (todoList.length === 0) {
+        console.log(`You Don't delete a todo because the todo-list is empty`);
+        break;
+    }
+    else {
+        isCondition = remTodo.confirmRemoveTodo;
+        // enter id for  delete a todo
+        if (isCondition) {
+            let remTodoId = await inquirer.prompt([
+                {
+                    name: "removeTodo",
+                    type: "number",
+                    message: "Enter a id for remove a Todo",
+                },
+            ]);
+            // Filterable Todos
+            const removeTodos = (todoId) => {
+                let delTodo = todoList.filter((e) => {
+                    return e.id !== todoId;
+                });
+                todoList = delTodo;
+            };
+            // // find id of todo for edit
+            let findId = todoList.find((e) => e.id === remTodoId.removeTodo);
+            // check id is available or not
+            if (findId) {
+                removeTodos(remTodoId.removeTodo);
+            }
+            else {
+                console.log(`The ID ${remTodoId.removeTodo} is not available`);
+            }
+        }
+    }
+    if (todoList.length === 0) {
+        break;
+    }
+}
+;
+if (todoList.length === 0) {
+    console.log('All Task delete from Todo-list, Now Todo-list is Empty');
+}
+else {
+    console.log("After Remove a Todo-list");
+    todoList.forEach((e) => {
+        console.log(`${e.id}) ${e.todo}`);
+    });
 }

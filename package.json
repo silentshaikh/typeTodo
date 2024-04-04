@@ -1,9 +1,10 @@
 {
-  "name": "typetodo",
-  "version": "1.0.0",
+  "name": "abmoiz-todo-list",
+  "version": "2.0.1",
   "description": "Build Todo App Using Typescript and Inquirer",
   "main": "index.js",
   "type": "module",
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
